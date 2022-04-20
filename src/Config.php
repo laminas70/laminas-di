@@ -111,8 +111,12 @@ class Config implements ConfigInterface
      * {@inheritDoc}
      *
      * @see Laminas\Di\ConfigInterface::getClassForAlias()
+     *
+     * @param string $name
+     *
+     * @return string|null
      */
-    public function getClassForAlias(string $name): ?string
+    public function getClassForAlias($name)
     {
         if (isset($this->types[$name]['typeOf'])) {
             return $this->types[$name]['typeOf'];
@@ -127,7 +131,7 @@ class Config implements ConfigInterface
      * @param string $type The alias or class name
      * @return array The configured parameters
      */
-    public function getParameters(string $type): array
+    public function getParameters($type): array
     {
         if (! isset($this->types[$type]['parameters']) || ! is_array($this->types[$type]['parameters'])) {
             return [];
@@ -142,14 +146,22 @@ class Config implements ConfigInterface
      * @see Laminas\Di\ConfigInterface::setParameters()
      *
      * @return $this
+     * @param string $type
+     * @param mixed[] $params
      */
-    public function setParameters(string $type, array $params)
+    public function setParameters($type, $params)
     {
         $this->types[$type]['parameters'] = $params;
         return $this;
     }
 
-    public function getTypePreference(string $type, ?string $context = null): ?string
+    /**
+     * @param string      $type
+     * @param string|null $context
+     *
+     * @return string|null
+     */
+    public function getTypePreference($type, $context = null)
     {
         if ($context) {
             return $this->getTypePreferenceForClass($type, $context);
@@ -167,8 +179,13 @@ class Config implements ConfigInterface
      * {@inheritDoc}
      *
      * @see Laminas\Di\ConfigInterface::getTypePreferencesForClass()
+     *
+     * @param string      $type
+     * @param string|null $context
+     *
+     * @return string|null
      */
-    private function getTypePreferenceForClass(string $type, ?string $context): ?string
+    private function getTypePreferenceForClass(string $type, string $context)
     {
         if (! isset($this->types[$context]['preferences'][$type])) {
             return null;
@@ -182,8 +199,9 @@ class Config implements ConfigInterface
      * {@inheritDoc}
      *
      * @see ConfigInterface::isAlias()
+     * @param string $name
      */
-    public function isAlias(string $name): bool
+    public function isAlias($name): bool
     {
         return isset($this->types[$name]['typeOf']);
     }
@@ -198,7 +216,14 @@ class Config implements ConfigInterface
         return array_keys($this->types);
     }
 
-    public function setTypePreference(string $type, string $preference, ?string $context = null): self
+    /**
+     * @param string      $type
+     * @param string      $preference
+     * @param string|null $context
+     *
+     * @return $this
+     */
+    public function setTypePreference($type, $preference, $context = null): self
     {
         if ($context) {
             $this->types[$context]['preferences'][$type] = $preference;
@@ -214,7 +239,7 @@ class Config implements ConfigInterface
      * @param string $class The class name this alias points to
      * @throws Exception\ClassNotFoundException When `$class` does not exist.
      */
-    public function setAlias(string $name, string $class): self
+    public function setAlias($name, $class): self
     {
         if (! class_exists($class) && ! interface_exists($class)) {
             throw new Exception\ClassNotFoundException($class);
@@ -224,8 +249,12 @@ class Config implements ConfigInterface
         return $this;
     }
 
-    /** @param array|ArrayAccess $options */
-    private function ensureArrayOrArrayAccess($options): void
+    /**
+     * @param array|ArrayAccess $options
+     *
+     * @return void
+     */
+    private function ensureArrayOrArrayAccess($options)
     {
         if (! is_array($options) && ! $options instanceof ArrayAccess) {
             throw new Exception\InvalidArgumentException(

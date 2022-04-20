@@ -30,8 +30,9 @@ class InjectorFactory
 
     /**
      * {@inheritDoc}
+     * @param \Psr\Container\ContainerInterface $container
      */
-    public function create(ContainerInterface $container): InjectorInterface
+    public function create($container): InjectorInterface
     {
         $config = $this->createConfig($container);
         return new Injector($config, $container);

@@ -91,7 +91,7 @@ class LegacyConfig extends Config
                     $config     = new Parameters($data);
                     $parameters = $config->get('parameters', $config->get('parameter'));
 
-                    if (is_iterable($parameters)) {
+                    if (is_array($parameters) || $parameters instanceof \Traversable) {
                         $parameters = $this->prepareParametersArray($parameters, $target);
                         $this->setParameters($target, $parameters);
                     }

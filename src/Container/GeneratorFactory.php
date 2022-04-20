@@ -26,7 +26,10 @@ class GeneratorFactory
         return (new ConfigFactory())->create($container);
     }
 
-    public function create(ContainerInterface $container): InjectorGenerator
+    /**
+     * @param \Psr\Container\ContainerInterface $container
+     */
+    public function create($container): InjectorGenerator
     {
         $diConfig = $this->getConfig($container);
         $resolver = new DependencyResolver(new RuntimeDefinition(), $diConfig);

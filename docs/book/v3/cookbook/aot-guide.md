@@ -35,7 +35,7 @@ $ cd laminas-di-aot-example
 Now add laminas-di with composer:
 
 ```bash
-$ composer require laminas/laminas-di
+$ composer require laminas70/laminas-di
 ```
 
 > ### Possible version conflicts
@@ -49,7 +49,7 @@ $ composer require laminas/laminas-di
 > composer's require command:
 >
 > ```bash
-> $ composer require laminas/laminas-di:^3.0
+> $ composer require laminas70/laminas-di:^3.0
 > ```
 >
 > This approach will also notify you if there are conflicts with installing v3.

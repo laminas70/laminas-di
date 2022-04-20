@@ -36,8 +36,9 @@ interface InjectionInterface
      * Implementations may utilize the provided ioc container to fulfill this purpose.
      *
      * @return mixed The resulting injection value
+     * @param \Psr\Container\ContainerInterface $container
      */
-    public function toValue(ContainerInterface $container);
+    public function toValue($container);
 
     /**
      * Export the injection to PHP code

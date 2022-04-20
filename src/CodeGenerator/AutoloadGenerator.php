@@ -23,17 +23,26 @@ class AutoloadGenerator
 {
     use GeneratorTrait;
 
-    private const CLASS_TEMPLATE = __DIR__ . '/../../templates/autoloader-class.template';
-    private const FILE_TEMPLATE  = __DIR__ . '/../../templates/autoloader-file.template';
+    const CLASS_TEMPLATE = __DIR__ . '/../../templates/autoloader-class.template';
+    const FILE_TEMPLATE  = __DIR__ . '/../../templates/autoloader-file.template';
 
-    private string $namespace;
+    /**
+     * @var string
+     */
+    private $namespace;
 
     public function __construct(string $namespace)
     {
         $this->namespace = $namespace;
     }
 
-    private function writeFile(string $filename, string $code): void
+    /**
+     * @param string $filename
+     * @param string $code
+     *
+     * @return void
+     */
+    private function writeFile(string $filename, string $code)
     {
         try {
             $file = new SplFileObject($filename, 'w');
@@ -43,7 +52,14 @@ class AutoloadGenerator
         }
     }
 
-    private function buildFromTemplate(string $templateFile, string $outputFile, array $replacements): void
+    /**
+     * @param string $templateFile
+     * @param string $outputFile
+     * @param array  $replacements
+     *
+     * @return void
+     */
+    private function buildFromTemplate(string $templateFile, string $outputFile, array $replacements)
     {
         $template = file_get_contents($templateFile);
 
@@ -60,12 +76,16 @@ class AutoloadGenerator
 
     private function generateClassmapCode(array &$classmap): string
     {
+
         $lines = array_map(
-            fn(string $class, string $file): string => sprintf(
-                '%s => %s,',
-                var_export($class, true),
-                var_export($file, true)
-            ),
+            function(string $class, string $file): string
+            {
+                return sprintf(
+                    '%s => %s,',
+                    var_export($class, true),
+                    var_export($file, true)
+                );
+            },
             array_keys($classmap),
             $classmap
         );
@@ -74,7 +94,12 @@ class AutoloadGenerator
         return implode($indentation, $lines);
     }
 
-    private function generateAutoloaderClass(array &$classmap): void
+    /**
+     * @param array $classmap
+     *
+     * @return void
+     */
+    private function generateAutoloaderClass(array &$classmap)
     {
         $this->buildFromTemplate(self::CLASS_TEMPLATE, 'Autoloader.php', [
             '%namespace%' => $this->namespace ? sprintf("namespace %s;\n", $this->namespace) : '',
@@ -82,7 +107,10 @@ class AutoloadGenerator
         ]);
     }
 
-    private function generateAutoloadFile(): void
+    /**
+     * @return void
+     */
+    private function generateAutoloadFile()
     {
         $this->buildFromTemplate(self::FILE_TEMPLATE, 'autoload.php', [
             '%namespace%' => $this->namespace ? sprintf("namespace %s;\n", $this->namespace) : '',
@@ -91,8 +119,10 @@ class AutoloadGenerator
 
     /**
      * @param string[] $classmap
+     *
+     * @return void
      */
-    public function generate(array &$classmap): void
+    public function generate(&$classmap)
     {
         $this->ensureOutputDirectory();
         $this->generateAutoloaderClass($classmap);

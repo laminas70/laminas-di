@@ -38,7 +38,7 @@ class DependencyResolver implements DependencyResolverInterface
     protected $container;
 
     /** @var string[] */
-    private array $builtinTypes = [
+    private $builtinTypes = [
         'string',
         'int',
         'bool',
@@ -51,7 +51,7 @@ class DependencyResolver implements DependencyResolverInterface
     ];
 
     /** @var array<string, string> */
-    private array $gettypeMap = [
+    private $gettypeMap = [
         'boolean' => 'bool',
         'integer' => 'int',
         'double'  => 'float',
@@ -106,7 +106,7 @@ class DependencyResolver implements DependencyResolverInterface
 
         // A type configuration may define a parameter should be auto resolved
         // even it was defined earlier
-        $params = array_filter($params, fn($value) => $value !== '*');
+        $params = array_filter($params, function($value) { return $value !== '*'; });
 
         return $params;
     }
@@ -173,7 +173,7 @@ class DependencyResolver implements DependencyResolverInterface
         }
 
         if ($type === 'iterable') {
-            return is_iterable($value);
+            return is_array($value) || $value instanceof \Traversable;
         }
 
         $valueType = $this->getTypeNameFromValue($value);
@@ -196,8 +196,9 @@ class DependencyResolver implements DependencyResolverInterface
      * @see DependencyResolverInterface::setContainer()
      *
      * @return $this
+     * @param \Psr\Container\ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container)
+    public function setContainer($container)
     {
         $this->container = $container;
         return $this;
@@ -224,9 +225,12 @@ class DependencyResolver implements DependencyResolverInterface
      *
      * If the candidate is usable, its injection representation is returned
      *
-     * @param mixed $value
+     * @param             $value
+     * @param string|null $requiredType
+     *
+     * @return InjectionInterface|null
      */
-    private function prepareInjection($value, ?string $requiredType): ?InjectionInterface
+    private function prepareInjection($value, string $requiredType = null)
     {
         if ($value instanceof ValueInjection || $value instanceof TypeInjection) {
             return $value;
@@ -262,8 +266,10 @@ class DependencyResolver implements DependencyResolverInterface
      * @throws Exception\UnexpectedValueException
      * @throws Exception\MissingPropertyException
      * @return InjectionInterface[]
+     * @param string $requestedType
+     * @param mixed[] $callTimeParameters
      */
-    public function resolveParameters(string $requestedType, array $callTimeParameters = []): array
+    public function resolveParameters($requestedType, $callTimeParameters = []): array
     {
         $definition = $this->getClassDefinition($requestedType);
         $params     = $definition->getParameters();
@@ -338,8 +344,13 @@ class DependencyResolver implements DependencyResolverInterface
 
     /**
      * @see DependencyResolverInterface::resolvePreference()
+     *
+     * @param string      $type
+     * @param string|null $context
+     *
+     * @return string|null
      */
-    public function resolvePreference(string $type, ?string $context = null): ?string
+    public function resolvePreference($type, $context = null)
     {
         if ($context) {
             $preference = $this->config->getTypePreference($type, $context);

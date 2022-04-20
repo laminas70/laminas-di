@@ -11,8 +11,9 @@ interface InjectorInterface
 {
     /**
      * Check if this dependency injector can handle the given class
+     * @param string $name
      */
-    public function canCreate(string $name): bool;
+    public function canCreate($name): bool;
 
     /**
      * Create a new instance of a class or alias
@@ -20,6 +21,7 @@ interface InjectorInterface
      * @param array $options Parameters used for instanciation
      * @return object The resulting instace
      * @throws Exception\ExceptionInterface When an error occours during instanciation.
+     * @param string $name
      */
-    public function create(string $name, array $options = []);
+    public function create($name, $options = []);
 }

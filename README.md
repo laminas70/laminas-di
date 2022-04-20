@@ -1,6 +1,7 @@
-# laminas-di
+# PHP 7.0 support for: laminas-di
 
-[![Build Status](https://github.com/laminas/laminas-di/workflows/continuous-integration.yml/badge.svg)](https://github.com/laminas/laminas-di/actions/workflows/continuous-integration.yml)
+[![Build Status](https://github.com/laminas70/laminas-di/workflows/continuous-integration.yml/badge.svg)]
+(https://github.com/laminas70/laminas-di/actions/workflows/continuous-integration.yml)
 
 > ## 🇷🇺 Русским гражданам
 > 

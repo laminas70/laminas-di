@@ -21,8 +21,9 @@ class ConfigFactory
 {
     /**
      * @return Config
+     * @param \Psr\Container\ContainerInterface $container
      */
-    public function create(ContainerInterface $container): ConfigInterface
+    public function create($container): ConfigInterface
     {
         $config = $container->has('config') ? $container->get('config') : [];
         $data   = $config['dependencies']['auto'] ?? [];

@@ -32,9 +32,9 @@ class FactoryGenerator
 {
     use GeneratorTrait;
 
-    private const INDENTATION_SPACES  = 4;
-    private const TEMPLATE_FILE       = __DIR__ . '/../../templates/factory.template';
-    private const PARAMETERS_TEMPLATE = <<<'__CODE__'
+    const INDENTATION_SPACES  = 4;
+    const TEMPLATE_FILE       = __DIR__ . '/../../templates/factory.template';
+    const PARAMETERS_TEMPLATE = <<<'__CODE__'
 
         $args = empty($options)
             ? [
@@ -46,30 +46,53 @@ class FactoryGenerator
 
 __CODE__;
 
-    private string $namespace;
+    /**
+     * @var string
+     */
+    private $namespace;
 
-    private DependencyResolverInterface $resolver;
+    /**
+     * @var DependencyResolverInterface
+     */
+    private $resolver;
 
-    private ConfigInterface $config;
+    /**
+     * @var ConfigInterface
+     */
+    private $config;
 
-    private array $classmap = [];
+    /**
+     * @var array
+     */
+    private $classmap = [];
 
+    /**
+     * @param ConfigInterface             $config
+     * @param DependencyResolverInterface $resolver
+     * @param string|null                 $namespace
+     */
     public function __construct(
         ConfigInterface $config,
         DependencyResolverInterface $resolver,
-        ?string $namespace = null
+        string $namespace = null
     ) {
         $this->resolver  = $resolver;
         $this->config    = $config;
         $this->namespace = $namespace ?: 'LaminasDiGenerated';
     }
 
-    protected function buildClassName(string $name): string
+    /**
+     * @param string $name
+     */
+    protected function buildClassName($name): string
     {
         return preg_replace('~[^a-z0-9\\\\]+~i', '_', $name) . 'Factory';
     }
 
-    protected function buildFileName(string $name): string
+    /**
+     * @param string $name
+     */
+    protected function buildFileName($name): string
     {
         return str_replace('\\', '/', $this->buildClassName($name)) . '.php';
     }
@@ -103,7 +126,7 @@ __CODE__;
     /**
      * @param InjectionInterface[] $injections
      */
-    private function canGenerateForParameters(iterable $injections): bool
+    private function canGenerateForParameters($injections): bool
     {
         foreach ($injections as $injection) {
             if (! $injection->isExportable()) {
@@ -118,8 +141,10 @@ __CODE__;
      * Builds the code for constructor parameters
      *
      * @param InjectionInterface[] $injections
+     *
+     * @return string|null
      */
-    private function buildParametersCode(iterable $injections): ?string
+    private function buildParametersCode($injections)
     {
         $withOptions    = [];
         $withoutOptions = [];
@@ -160,8 +185,9 @@ __CODE__;
 
     /**
      * @throws RuntimeException When generating the factory failed.
+     * @param string $class
      */
-    public function generate(string $class): string
+    public function generate($class): string
     {
         $className  = $this->getClassName($class);
         $injections = $this->resolver->resolveParameters($className);
@@ -177,7 +203,7 @@ __CODE__;
         $paramsCode                                = $this->buildParametersCode($injections);
         $absoluteClassName                         = '\\' . $className;
         $factoryClassName                          = $this->namespace . '\\' . $this->buildClassName($class);
-        [$namespace, $unqualifiedFactoryClassName] = $this->splitFullyQualifiedClassName($factoryClassName);
+        list($namespace, $unqualifiedFactoryClassName) = $this->splitFullyQualifiedClassName($factoryClassName);
 
         $filename = $this->buildFileName($class);
         $filepath = $this->outputDirectory . '/' . $filename;

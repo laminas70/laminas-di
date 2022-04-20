@@ -38,8 +38,9 @@ class AutowireFactory
      *
      * @param string $requestedName
      * @return bool
+     * @param \Psr\Container\ContainerInterface $container
      */
-    public function canCreate(ContainerInterface $container, $requestedName)
+    public function canCreate($container, $requestedName)
     {
         if (! $container->has(InjectorInterface::class)) {
             return false;
@@ -51,9 +52,14 @@ class AutowireFactory
     /**
      * Create an instance
      *
+     * @param ContainerInterface $container
+     * @param string             $requestedName
+     * @param array|null         $options
+     *
      * @return object
+     * @throws Exception\ExceptionInterface
      */
-    public function create(ContainerInterface $container, string $requestedName, ?array $options = null)
+    public function create($container, $requestedName, $options = null)
     {
         return $this->getInjector($container)->create($requestedName, $options ?: []);
     }
@@ -61,10 +67,14 @@ class AutowireFactory
     /**
      * Make invokable and implement the laminas-service factory pattern
      *
-     * @param string $requestedName
+     * @param ContainerInterface $container
+     * @param                    $requestedName
+     * @param array|null         $options
+     *
      * @return object
+     * @throws Exception\ExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return $this->create($container, (string) $requestedName, $options);
     }

@@ -15,9 +15,15 @@ use Laminas\ServiceManager\Factory\AbstractFactoryInterface;
  */
 class AutowireFactory implements AbstractFactoryInterface
 {
-    private GenericAutowireFactory $factory;
+    /**
+     * @var GenericAutowireFactory
+     */
+    private $factory;
 
-    public function __construct(?GenericAutowireFactory $factory = null)
+    /**
+     * @param GenericAutowireFactory|null $factory
+     */
+    public function __construct(GenericAutowireFactory $factory = null)
     {
         $this->factory = $factory ? : new GenericAutowireFactory();
     }
@@ -27,8 +33,9 @@ class AutowireFactory implements AbstractFactoryInterface
      *
      * @param string $requestedName
      * @return bool
+     * @param \Interop\Container\ContainerInterface $container
      */
-    public function canCreate(ContainerInterface $container, $requestedName)
+    public function canCreate($container, $requestedName)
     {
         return $this->factory->canCreate($container, $requestedName);
     }
@@ -36,10 +43,14 @@ class AutowireFactory implements AbstractFactoryInterface
     /**
      * Make invokable and implement the laminas-service factory pattern
      *
-     * @param string $requestedName
-     * @return bool
+     * @param ContainerInterface $container
+     * @param                    $requestedName
+     * @param array|null         $options
+     *
+     * @return object
+     * @throws \Laminas\Di\Exception\ExceptionInterface
      */
-    public function __invoke(ContainerInterface $container, $requestedName, ?array $options = null)
+    public function __invoke($container, $requestedName, array $options = null)
     {
         return $this->factory->create($container, (string) $requestedName, $options);
     }

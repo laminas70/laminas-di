@@ -55,10 +55,10 @@ class Injector implements InjectorInterface
      *      The default resolver is used when null is passed or the parameter is omitted
      */
     public function __construct(
-        ?ConfigInterface $config = null,
-        ?ContainerInterface $container = null,
-        ?DefinitionInterface $definition = null,
-        ?DependencyResolverInterface $resolver = null
+        ConfigInterface $config = null,
+        ContainerInterface $container = null,
+        DefinitionInterface $definition = null,
+        DependencyResolverInterface $resolver = null
     ) {
         $this->definition = $definition ?: new Definition\RuntimeDefinition();
         $this->config     = $config ?: new Config();
@@ -72,8 +72,9 @@ class Injector implements InjectorInterface
      * Sets the ioc container to utilize for fetching instances of dependencies
      *
      * @return $this
+     * @param \Psr\Container\ContainerInterface $container
      */
-    public function setContainer(ContainerInterface $container)
+    public function setContainer($container)
     {
         $this->resolver->setContainer($container);
         $this->container = $container;
@@ -102,8 +103,9 @@ class Injector implements InjectorInterface
      * Check if the given type name can be instantiated
      *
      * This will be the case if the name points to a class.
+     * @param string $name
      */
-    public function canCreate(string $name): bool
+    public function canCreate($name): bool
     {
         $class = $this->getClassName($name);
         return class_exists($class) && ! interface_exists($class);
@@ -118,7 +120,7 @@ class Injector implements InjectorInterface
      * @throws ClassNotFoundException
      * @throws RuntimeException
      */
-    public function create(string $name, array $parameters = [])
+    public function create($name, $parameters = [])
     {
         if (in_array($name, $this->instantiationStack)) {
             throw new Exception\CircularDependencyException(sprintf(
@@ -150,7 +152,7 @@ class Injector implements InjectorInterface
      * @throws InvalidCallbackException
      * @throws ClassNotFoundException
      */
-    protected function createInstance(string $name, array $params)
+    protected function createInstance($name, $params)
     {
         $class = $this->getClassName($name);
 

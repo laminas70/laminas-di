@@ -99,8 +99,9 @@ class ValueInjection implements InjectionInterface
         return false;
     }
 
-    /** @return mixed */
-    public function toValue(ContainerInterface $container)
+    /** @return mixed
+     * @param \Psr\Container\ContainerInterface $container */
+    public function toValue($container)
     {
         return $this->value;
     }

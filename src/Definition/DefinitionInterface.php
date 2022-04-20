@@ -20,11 +20,13 @@ interface DefinitionInterface
 
     /**
      * Whether a class exists in this definition
+     * @param string $class
      */
-    public function hasClass(string $class): bool;
+    public function hasClass($class): bool;
 
     /**
      * @throws ClassNotFoundException
+     * @param string $class
      */
-    public function getClassDefinition(string $class): ClassDefinitionInterface;
+    public function getClassDefinition($class): ClassDefinitionInterface;
 }

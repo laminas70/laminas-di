@@ -12,6 +12,8 @@ interface FactoryInterface
      * Create an instance
      *
      * @return object
+     * @param \Psr\Container\ContainerInterface $container
+     * @param mixed[] $options
      */
-    public function create(ContainerInterface $container, array $options);
+    public function create($container, $options);
 }

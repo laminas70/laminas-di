@@ -17,16 +17,25 @@ abstract class AbstractInjector implements InjectorInterface
     protected $factories = [];
 
     /** @var FactoryInterface[] */
-    private array $factoryInstances = [];
+    private $factoryInstances = [];
 
-    private ContainerInterface $container;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
-    private InjectorInterface $injector;
+    /**
+     * @var InjectorInterface
+     */
+    private $injector;
 
     /**
      * {@inheritDoc}
+     *
+     * @param InjectorInterface       $injector
+     * @param ContainerInterface|null $container
      */
-    public function __construct(InjectorInterface $injector, ?ContainerInterface $container = null)
+    public function __construct(InjectorInterface $injector, ContainerInterface $container = null)
     {
         $this->injector  = $injector;
         $this->container = $container ?: new DefaultContainer($this);
@@ -36,10 +45,18 @@ abstract class AbstractInjector implements InjectorInterface
 
     /**
      * Init factory list
+     *
+     * @return void
      */
-    abstract protected function loadFactoryList(): void;
+    abstract protected function loadFactoryList();
 
-    private function setFactory(string $type, FactoryInterface $factory): void
+    /**
+     * @param string           $type
+     * @param FactoryInterface $factory
+     *
+     * @return void
+     */
+    private function setFactory(string $type, FactoryInterface $factory)
     {
         $this->factoryInstances[$type] = $factory;
     }
@@ -58,7 +75,10 @@ abstract class AbstractInjector implements InjectorInterface
         return $factory;
     }
 
-    public function canCreate(string $name): bool
+    /**
+     * @param string $name
+     */
+    public function canCreate($name): bool
     {
         return $this->hasFactory($name) || $this->injector->canCreate($name);
     }
@@ -68,8 +88,10 @@ abstract class AbstractInjector implements InjectorInterface
         return isset($this->factories[$name]);
     }
 
-    /** @return mixed */
-    public function create(string $name, array $options = [])
+    /** @return mixed
+     * @param string $name
+     * @param mixed[] $options */
+    public function create($name, $options = [])
     {
         if ($this->hasFactory($name)) {
             return $this->getFactory($name)->create($this->container, $options);

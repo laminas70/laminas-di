@@ -45,7 +45,7 @@ class DefaultContainer implements ContainerInterface
      * @param string $name The name of the service retrievable by get()
      * @param object $service The service instance
      */
-    public function setInstance(string $name, $service): self
+    public function setInstance($name, $service): self
     {
         $this->services[$name] = $service;
         return $this;

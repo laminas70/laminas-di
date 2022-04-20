@@ -56,11 +56,12 @@ class Parameter implements ParameterInterface
      * {@inheritDoc}
      *
      * @see ParameterInterface::getType()
+     * @return string|null
      */
-    public function getType(): ?string
+    public function getType()
     {
         if ($this->reflection->hasType()) {
-            return $this->reflection->getType()->getName();
+            return $this->reflection->getType()->__toString();
         }
 
         return null;

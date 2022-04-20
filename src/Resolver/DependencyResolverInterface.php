@@ -22,7 +22,7 @@ interface DependencyResolverInterface
      *     checking for instances
      * @return self Should provide a fluent interface
      */
-    public function setContainer(ContainerInterface $container);
+    public function setContainer($container);
 
     /**
      * Resolve a type prefernece
@@ -34,7 +34,7 @@ interface DependencyResolverInterface
      * @return null|string Returns the preferred type name or null if there is no
      *     preference
      */
-    public function resolvePreference(string $type, ?string $context = null): ?string;
+    public function resolvePreference($type, $context = null);
 
     /**
      * Resolves all parameters for injection
@@ -45,5 +45,5 @@ interface DependencyResolverInterface
      *     array contains either TypeInjection or ValueInjection instances
      * @throws MissingPropertyException  When a parameter could not be resolved.
      */
-    public function resolveParameters(string $class, array $parameters = []): array;
+    public function resolveParameters($class, $parameters = []): array;
 }

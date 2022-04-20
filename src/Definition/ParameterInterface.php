@@ -13,7 +13,10 @@ interface ParameterInterface
 
     public function getPosition(): int;
 
-    public function getType(): ?string;
+    /**
+     * @return string|null
+     */
+    public function getType();
 
     /**
      * @return mixed

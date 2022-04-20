@@ -18,8 +18,10 @@ final class TypeInjection implements InjectionInterface
 {
     /**
      * Holds the type name to look up
+     *
+     * @var string
      */
-    private string $type;
+    private $type;
 
     /**
      * Constructor
@@ -39,8 +41,9 @@ final class TypeInjection implements InjectionInterface
         return true;
     }
 
-    /** @return mixed */
-    public function toValue(ContainerInterface $container)
+    /** @return mixed
+     * @param \Psr\Container\ContainerInterface $container */
+    public function toValue($container)
     {
         return $container->get($this->type);
     }

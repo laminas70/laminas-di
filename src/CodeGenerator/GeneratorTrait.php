@@ -28,8 +28,9 @@ trait GeneratorTrait
      * This will check the path at $dir if it exsits and if it is a directory
      *
      * @throws GenerateCodeException
+     * @param string $dir
      */
-    protected function ensureDirectory(string $dir)
+    protected function ensureDirectory($dir)
     {
         if (! is_dir($dir) && ! mkdir($dir, $this->mode, true)) {
             throw new GenerateCodeException(sprintf(
@@ -66,7 +67,7 @@ trait GeneratorTrait
      * @param null|int $mode The creation mode for the directory
      * @return $this Provides a fluent interface
      */
-    public function setOutputDirectory(string $dir, ?int $mode = null): self
+    public function setOutputDirectory($dir, $mode = null): self
     {
         $this->outputDirectory = $dir;
 
@@ -77,7 +78,10 @@ trait GeneratorTrait
         return $this;
     }
 
-    public function getOutputDirectory(): ?string
+    /**
+     * @return string|null
+     */
+    public function getOutputDirectory()
     {
         return $this->outputDirectory;
     }
